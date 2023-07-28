@@ -1,4 +1,5 @@
 const crypto = require('crypto');
+const Pow = require('./pow')
 
 class Block {
     constructor(timestamp, data, prevBlockHash, hash, nonce) {
@@ -6,7 +7,7 @@ class Block {
     this.data = data;//数据
     this.prevBlockHash = prevBlockHash;//前一块的hash
     this.hash = hash;//当前的hash
-    this.Nonce = nonce
+    this.nonce = nonce
         }
 
     setHash() {
@@ -25,6 +26,12 @@ function newBlock(data, prevBlockHash) {
     const timestamp = Math.round(new Date().getTime() / 1000);
     const block = new Block(timestamp, data, prevBlockHash, Buffer.alloc(0),0);
     block.setHash();
+    // newPow = Pow.NewProofOfWork(block);
+    // resutlt = Pow.run(newPow);
+    // block.nonce = resutlt[0]
+    // block.hash = resutlt[1]
+
+    
     return block; 
 }
 
@@ -49,6 +56,8 @@ class Blockchain {
 function newBlockchain() {
     return new Blockchain(newGenesisBlock());
 }
+
+
   
 
 module.exports = {
