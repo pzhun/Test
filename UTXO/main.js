@@ -10,8 +10,6 @@ bc.addBlock("Send 2");
 
 
 for(let i=0;i<bc.blocks.length;i++){
-    console.log(bc.blocks[i]);
+    console.log(bc.blocks[i].hash);
 }
 
-
-//test feature-A

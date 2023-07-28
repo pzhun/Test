@@ -20,34 +20,37 @@ function NewProofOfWork(block) { //创建pow
     return pow;
 }
 
-function Int2Hex(num) { 
-    const buffer = Buffer.allocUnsafe(8);
-    buffer.writeInt64BE(num, 0);
-    return buffer;
+function int2Hex(num) {
+  const buffer = Buffer.alloc(8); // 创建一个长度为 8 字节的 Buffer
+  buffer.writeBigInt64BE(num); // 将 int64 类型的整数写入 Buffer
+  return buffer;
 }
+// const headers = Buffer.concat([this.prevBlockHash, Buffer.from(this.data), Buffer.from(timestamp)]);
 
 function prepareData(pow, nonce) { //准备数据 
+  console.log(pow.block.PrevBlockHash)
+
     const data = Buffer.concat([
         pow.block.PrevBlockHash,
-        pow.block.Data,
-        Int2Hex(pow.block.Timestamp),
-        Int2Hex(targetBits),
-        Int2Hex(nonce),
+        pow.block.Data
+        // int2Hex(pow.block.Timestamp),
+        // int2Hex(targetBits),
+        // int2Hex(nonce),
     ]);
   
     return data;
   }
   
 
-function Run(pow) { //运行挖矿
-    const hashInt = bigInt();
+function run(pow) { //运行挖矿
+    const hashInt = BigInt();
     let hash;
     let nonce = 0;
   
     console.log(`Mining the block containing ${pow.block.Data}, maxNonce=${maxNonce}`);
     while (nonce < maxNonce) {
       // 数据准备
-      const data = pow.prepareData(nonce);
+      const data = prepareData(pow,nonce);
       // 计算哈希
       hash = crypto.createHash('sha256').update(data).digest();
       process.stdout.write(hash.toString('hex'));
@@ -60,7 +63,7 @@ function Run(pow) { //运行挖矿
       }
     }
     console.log('\n\n');
-    return nonce, hash;
+    return [nonce, hash];
   }  
 
 
@@ -74,4 +77,5 @@ function Validate(pow) {  //校验hash是否符合挖矿难度
 
 module.exports = {
     NewProofOfWork,
+    run
 };
